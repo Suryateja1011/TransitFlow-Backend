@@ -8,6 +8,7 @@ import copy
 import mysql.connector
 from datetime import datetime, timedelta
 import uuid
+import os
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -21,10 +22,12 @@ model = YOLO("yolov8l.pt")
 # MYSQL CONNECTION
 # ---------------------------------
 db = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="root123",
-    database="smart_bus_system"
+    host=os.environ["DB_HOST"],
+    port=int(os.getenv("DB_PORT", 3306)),
+    user=os.environ["DB_USER"],
+    password=os.environ["DB_PASSWORD"],
+    database=os.getenv("DB_NAME", "smart_bus_system"),
+    connection_timeout=10
 )
 
 cursor = db.cursor(dictionary=True, buffered=True)
